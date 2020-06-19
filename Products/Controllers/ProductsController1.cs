@@ -12,7 +12,7 @@ using Products.Services;
 
 namespace Products.Controllers
 {
-    
+    [Produces("application/json", "application/xml")]
     [Route("api/Products")]
     [ApiController]
     public class ProductsController1 : ControllerBase
@@ -23,7 +23,14 @@ namespace Products.Controllers
             productRepository = _productRepository;
         }
         // GET: api/<ProductsController1>
-        [HttpGet(Name ="Get")]
+        /// <summary>
+        /// Products with pagination
+        /// </summary>
+        /// <param name="pageNumber">Page Number</param>
+        /// <param name="pageSize">Page Size</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("/api/products")]
         public IEnumerable<Product> Get(int? pageNumber, int? pageSize)
         {
             var products = productRepository.GetProductByPage();
@@ -33,44 +40,60 @@ namespace Products.Controllers
             var items = products.Skip((currentPage - 1) * currentSize).Take(currentSize).ToList();
             return items;
         }
-        [Route("api/Products/Search")]
+        /// <summary>
+        /// Search Products By Name
+        /// </summary>
+        /// <param name="searchProduct">Product Name</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("/api/products/search")]
         public IEnumerable<Product> GetBySearch(string searchProduct)
         {
-            var products=productRepository.Get().Where(p => p.ProductName.StartsWith(searchProduct));
-            return products;   
+            var products = productRepository.Get().Where(p => p.ProductName.StartsWith(searchProduct));
+            return products;
         }
-        //[HttpGet("Sorting")]
-        //public IEnumerable<Product> Get(string sortPrice)
-        //{
-        //    IQueryable<Product> products;
-        //    switch (sortPrice)
-        //    {
-        //        case "desc":
-        //            products = (IQueryable<Product>)productRepository.Get().OrderByDescending(p => p.ProductPrice);
-        //            break;
-        //        case "asc":
-        //            products = (IQueryable<Product>)productRepository.Get().OrderBy(p => p.ProductPrice);
-        //            break;
-        //        default:
-        //            products = (IQueryable<Product>)productRepository.Get();
-        //            break;
-        //    }
-        //    return products;
-        //}
+        [HttpGet]
+        [Route("/api/products/sort")]
+        public IEnumerable<Product> GetSort(string sortPrice)
+        {
+            IQueryable<Product> products;
+            switch (sortPrice)
+            {
+                case "desc":
+                    products = (IQueryable<Product>)productRepository.Get().OrderByDescending(p => p.ProductPrice);
+                    break;
+                case "asc":
+                    products = (IQueryable<Product>)productRepository.Get().OrderBy(p => p.ProductPrice);
+                    break;
+                default:
+                    products = (IQueryable<Product>)productRepository.Get();
+                    break;
+            }
+            return products;
+        }
         // GET api/<ProductsController1>/5
-        [Route("api/Products/{id}")]
-        public IActionResult Get(int id)
+        /// <summary>
+        /// Product
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type= typeof(Product))]
+        [HttpGet("{id}", Name = "GetSingleProd")]
+        public IActionResult Get2(int id)
         {
             var product = productRepository.GetProduct(id);
             if (product == null)
             {
-                return NotFound("No record found");
+                return NotFound();
             }
             return Ok(product);
         }
 
         // POST api/<ProductsController1>
         [HttpPost]
+        [Consumes("application/json")]
         public IActionResult Post([FromBody] Product product)
         {
             if (!ModelState.IsValid)

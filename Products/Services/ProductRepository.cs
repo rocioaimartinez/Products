@@ -42,7 +42,7 @@ namespace Products.Services
             return productsDbContext.Products;
         }
 
-        
+
 
         public void UpdateProduct(Product product)
         {

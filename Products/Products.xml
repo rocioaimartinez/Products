@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Products</name>
+    </assembly>
+    <members>
+        <member name="M:Products.Controllers.ProductsController1.Get(System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>
+            Products with pagination
+            </summary>
+            <param name="pageNumber">Page Number</param>
+            <param name="pageSize">Page Size</param>
+            <returns></returns>
+        </member>
+        <member name="M:Products.Controllers.ProductsController1.GetBySearch(System.String)">
+            <summary>
+            Search Products By Name
+            </summary>
+            <param name="searchProduct">Product Name</param>
+            <returns></returns>
+        </member>
+        <member name="M:Products.Controllers.ProductsController1.Get2(System.Int32)">
+            <summary>
+            Product
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Products.Models.Product">
+            <summary>
+            Product
+            </summary>
+        </member>
+        <member name="P:Products.Models.Product.ProductId">
+            <summary>
+            Id is auto-generated
+            </summary>
+        </member>
+        <member name="P:Products.Models.Product.ProductName">
+            <summary>
+            Name can't be longer than 50 characters
+            </summary>
+        </member>
+    </members>
+</doc>

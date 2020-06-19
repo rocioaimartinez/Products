@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,17 +33,32 @@ namespace Products
         {
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddMvc(option => option.EnableEndpointRouting = false);
+            services.AddMvc(setupAction =>
+            {
+                setupAction.ReturnHttpNotAcceptable = true;
+                setupAction.OutputFormatters.Add(new XmlSerializerOutputFormatter());
+                var jsonOutputFormatter = setupAction.OutputFormatters.OfType<JsonOutputFormatter>().FirstOrDefault();
+            }
+            );
             services.AddDbContext<ProductsDBContext>(option => option.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ProductsDb"));
             //services.AddApiVersioning();
             services.AddScoped<IProduct, ProductRepository>();
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(setupAction =>
             {
-                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "Products API", Version = "v1" });
-
-                //var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                //var xmlCommentsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
-
-                //c.IncludeXmlComments(xmlCommentsFullPath);
+                setupAction.SwaggerDoc("LibraryOpenAPISpecification", new Microsoft.OpenApi.Models.OpenApiInfo()
+                {
+                    Title = "Products",
+                    Version = "1",
+                    Description="API for stores.",
+                    Contact= new Microsoft.OpenApi.Models.OpenApiContact()
+                    {
+                        Email="some@gmail.com",
+                        Name="Rocio"
+                    }
+                });
+                var xmlCommentsFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlCommnetsFullPath = Path.Combine(AppContext.BaseDirectory, xmlCommentsFile);
+                setupAction.IncludeXmlComments(xmlCommnetsFullPath);
             });
         }
 
@@ -60,12 +76,13 @@ namespace Products
             }
 
             app.UseHttpsRedirection();
-            productsDbcontext.Database.EnsureCreated();
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
+            productsDbcontext.Database.EnsureCreated();
+
+            app.UseSwaggerUI(setupAction=> 
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Products API");
-                //c.RoutePrefix = "";
+                setupAction.SwaggerEndpoint("/swagger/LibraryOpenAPISpecification/swagger.json", "Library API");
+                setupAction.RoutePrefix = "";
             });
             app.UseMvc();
             

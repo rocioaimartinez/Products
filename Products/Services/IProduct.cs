@@ -10,7 +10,7 @@ namespace Products.Services
     {
         IEnumerable<Product> GetProductByPage();
         IEnumerable<Product> Get();
-        
+
         Product GetProduct(int id);
         void AddProduct(Product product);
         void UpdateProduct(Product product);
