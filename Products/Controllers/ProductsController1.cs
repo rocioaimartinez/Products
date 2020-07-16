@@ -37,7 +37,9 @@ namespace Products.Controllers
 
             int currentPage = pageNumber ?? 1;
             int currentSize = pageSize ?? 5;
-            var items = products.Skip((currentPage - 1) * currentSize).Take(currentSize).ToList();
+            var items = products.
+                Skip((currentPage - 1) * currentSize).
+                Take(currentSize).ToList();
             return items;
         }
         /// <summary>
@@ -49,7 +51,10 @@ namespace Products.Controllers
         [Route("/api/products/search")]
         public IEnumerable<Product> GetBySearch(string searchProduct)
         {
-            var products = productRepository.Get().Where(p => p.ProductName.StartsWith(searchProduct));
+            var products = productRepository.
+                                        Get().
+                                        Where(p => p.
+                                        ProductName.StartsWith(searchProduct));
             return products;
         }
         [HttpGet]
@@ -60,13 +65,18 @@ namespace Products.Controllers
             switch (sortPrice)
             {
                 case "desc":
-                    products = (IQueryable<Product>)productRepository.Get().OrderByDescending(p => p.ProductPrice);
+                    products = (IQueryable<Product>)productRepository.
+                               Get().
+                               OrderByDescending(p => p.ProductPrice);
                     break;
                 case "asc":
-                    products = (IQueryable<Product>)productRepository.Get().OrderBy(p => p.ProductPrice);
+                    products = (IQueryable<Product>)productRepository.
+                                Get().OrderBy(p => p.
+                                ProductPrice);
                     break;
                 default:
-                    products = (IQueryable<Product>)productRepository.Get();
+                    products = (IQueryable<Product>)productRepository.
+                                Get();
                     break;
             }
             return products;
