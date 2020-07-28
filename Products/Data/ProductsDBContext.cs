@@ -11,5 +11,6 @@ namespace Products.Data
     {
         public ProductsDBContext(DbContextOptions<ProductsDBContext> options):base(options){ }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Prenda> Prenda { get; set; }
     }
 }

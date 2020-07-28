@@ -78,6 +78,7 @@ namespace Products
             app.UseHttpsRedirection();
             app.UseSwagger();
             productsDbcontext.Database.EnsureCreated();
+            //productsDbcontext.Database.Migrate();
 
             app.UseSwaggerUI(setupAction=> 
             {

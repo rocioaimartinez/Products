@@ -18,12 +18,13 @@ namespace Products.Models
         /// <summary>
         /// Name can't be longer than 50 characters
         /// </summary>
-        [Required, StringLength(50, ErrorMessage ="Name can't be longer that 15 characters")]
+        [Required, StringLength(50, ErrorMessage ="Name can't be longer that 50 characters")]
         [MaxLength(50)]
         public string ProductName { get; set; }
         [Required]
-        public string  ProductPrice { get; set; }
+        public decimal  ProductPrice { get; set; }
         public DateTime PriceDate { get; set; }
         public int Category { get; set; }
+        public int Stock { get; set; }
     }
 }
