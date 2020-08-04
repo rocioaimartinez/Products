@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Products.Data;
@@ -37,10 +38,11 @@ namespace Products
             {
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlSerializerOutputFormatter());
-                var jsonOutputFormatter = setupAction.OutputFormatters.OfType<JsonOutputFormatter>().FirstOrDefault();
+                var jsonOutputFormatter = setupAction.OutputFormatters.OfType<SystemTextJsonOutputFormatter>().FirstOrDefault();
             }
             );
-            services.AddDbContext<ProductsDBContext>(option => option.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ProductsDb"));
+            //services.AddDbContext<ProductsDBContext>(option => option.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ProductsDb"));
+            services.AddDbContext<ProductsDBContext>();
             //services.AddApiVersioning();
             services.AddScoped<IProduct, ProductRepository>();
             services.AddSwaggerGen(setupAction =>
@@ -63,7 +65,7 @@ namespace Products
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ProductsDBContext productsDbcontext)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ProductsDBContext productsDbcontext)
         {
             if (env.IsDevelopment())
             {
@@ -77,7 +79,7 @@ namespace Products
 
             app.UseHttpsRedirection();
             app.UseSwagger();
-            productsDbcontext.Database.EnsureCreated();
+            //productsDbcontext.Database.EnsureCreated();
             //productsDbcontext.Database.Migrate();
 
             app.UseSwaggerUI(setupAction=> 
